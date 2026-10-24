@@ -1,0 +1,14 @@
+{
+  "app": "LivingDexCloud",
+  "version": 1,
+  "records": {
+    "1": {
+      "nickname": "Sprout",
+      "source": "Pokémon FireRed",
+      "ability": "Overgrow",
+      "encounterLocation": "Pallet Town — Professor Oak's Lab",
+      "metLevel": "5",
+      "obtained": true
+    }
+  }
+}

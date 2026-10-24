@@ -1,200 +1,205 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#0b1220">
-  <meta name="description" content="Your personal National Living Pokédex: challenges, nicknames, and species-by-species collection tracker.">
-  <title>Living Dex • Challenge Collection</title>
-  <style>
-    :root { color-scheme:dark; --bg:#080e19; --panel:#101b2b; --panel2:#152337; --outline:#27394e; --ink:#ebf4ff; --muted:#90a4bd; --mint:#6ae4b9; --cyan:#6abcf2; --gold:#ffd477; --red:#ff8393; --shadow:0 12px 38px #0004; }
-    * { box-sizing:border-box }
-    body { background:radial-gradient(circle at 75% -5%,#1b334b 0,transparent 34%),var(--bg); color:var(--ink); font:15px/1.45 ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; margin:0; min-height:100vh }
-    button,input,textarea,select { font:inherit }
-    button { cursor:pointer }
-    button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible { outline:2px solid var(--mint);outline-offset:3px }
-    .shell { width:min(1460px,calc(100% - 40px));margin:auto }
-    .masthead { display:flex; gap:16px;align-items:center;justify-content:space-between;padding:24px 0 18px;flex-wrap:wrap }
-    .brand { display:flex;gap:14px;align-items:center }
-    .ball { height:49px;width:49px;border-radius:50%;border:3px solid #e9f4ff;background:linear-gradient(#ef6680 0 44%,#1f3146 44% 55%,#eaf1fb 55%);position:relative;box-shadow:0 0 0 5px #ffffff0b }
-    .ball:after { content:"";position:absolute;width:14px;height:14px;border-radius:50%;border:4px solid #1f3146;background:#f9fcff;top:13px;left:14px }
-    h1,h2,h3,p { margin-top:0 }
-    h1 { font-size:24px;line-height:1.1;margin:0;letter-spacing:-.7px }
-    .eyebrow { color:var(--mint);font-size:10px;letter-spacing:2.4px;font-weight:800;text-transform:uppercase;margin-bottom:6px }
-    .dim { color:var(--muted) }
-    .actions { display:flex;gap:9px;flex-wrap:wrap }
-    .btn { padding:10px 13px;border-radius:10px;border:1px solid var(--outline);background:#1a293c;color:var(--ink);font-weight:700;font-size:13px }
-    .btn:hover { background:#24374d }
-    .btn.primary { background:var(--mint);border-color:var(--mint);color:#10251f }
-    .btn.primary:hover { background:#a4f5d8 }
-    .btn:disabled { opacity:.4;cursor:not-allowed }
-    .stats { display:grid;grid-template-columns:2.2fr 1fr 1fr 1fr;gap:13px;margin:6px 0 24px }
-    .panel { border:1px solid var(--outline);background:linear-gradient(130deg,#142238d4,#0e192a);border-radius:16px;box-shadow:var(--shadow) }
-    .stat { padding:18px 20px }
-    .stat strong { display:block;font-size:31px;line-height:1.2;letter-spacing:-1px;font-variant-numeric:tabular-nums }
-    .stat-label { color:var(--muted);font-weight:650;font-size:12px;margin-bottom:8px }
-    .progress { height:9px;background:#2c394c;border-radius:12px;overflow:hidden;margin-top:15px }
-    .bar { background:linear-gradient(90deg,#34cfa8,#87efc7);height:100%;width:0;transition:width .3s }
-    .stat .dim { font-size:12px;margin-top:5px }
-    .main-grid { display:grid;grid-template-columns:minmax(0,1fr) 370px;gap:18px;align-items:start }
-    .left,.right { min-width:0 }
-    .section-head { display:flex;align-items:end;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:15px }
-    h2 { font-size:19px;margin:0;letter-spacing:-.5px }
-    .subtext { font-size:12px;color:var(--muted);margin-top:3px }
-    .toolbar { border:1px solid var(--outline);background:#0f1a2a;padding:14px;border-radius:15px;margin-bottom:14px }
-    .gens { display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px }
-    .tab { border:1px solid #2b3e54;color:var(--muted);background:#162438;border-radius:20px;font-size:12px;font-weight:700;padding:7px 11px }
-    .tab.active { background:var(--mint);color:#10251f;border-color:var(--mint) }
-    .filter-row { display:grid;grid-template-columns:minmax(0,1fr) 190px;gap:9px }
-    input[type="text"], input[type="search"],textarea,select { background:#0b1523;border:1px solid #31445e;color:var(--ink);border-radius:10px;padding:10px 12px;width:100%;font-size:13px }
-    textarea { resize:vertical;min-height:75px }
-    input::placeholder,textarea::placeholder { color:#69809a }
-    .dex-grid { display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px }
-    .poke { text-align:left;border-radius:14px;min-width:0;padding:11px;background:#121f30;border:1px solid #26394e;color:var(--ink);position:relative;overflow:hidden;transition:background .15s,transform .15s,border-color .15s }
-    .poke:hover { transform:translateY(-2px);background:#192b40;border-color:#45617a }
-    .poke.active { border-color:var(--mint);box-shadow:inset 0 0 0 1px var(--mint) }
-    .poke.obtained { background:linear-gradient(145deg,#142d34,#142234);border-color:#2d6557 }
-    .poke .number { font-size:11px;letter-spacing:.7px;color:var(--muted);font-weight:800 }
-    .poke .check { position:absolute;right:10px;top:9px;color:var(--mint);font-size:14px;font-weight:900 }
-    .poke img { width:100%;height:97px;object-fit:contain;display:block;margin:2px 0 5px;filter:drop-shadow(0 10px 11px #0003) }
-    .poke .species { display:block;font-weight:800;font-size:13px;line-height:1.25;overflow:hidden;text-overflow:ellipsis;white-space:nowrap }
-    .poke .nick { display:block;font-size:11px;color:var(--muted);min-height:18px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:3px }
-    .poke .pill { display:inline-block;margin-top:5px;font-size:10px;color:var(--gold);font-weight:700 }
-    .poke.obtained .pill { color:var(--mint) }
-    .pager { display:flex;justify-content:space-between;align-items:center;gap:10px;padding:17px 0 25px }
-    .pager span { color:var(--muted);font-size:12px }
-    .right { position:sticky;top:16px }
-    .details { padding:20px;max-height:calc(100vh - 35px);overflow:auto;scrollbar-color:#39556d #122034 }
-    .detail-top { display:grid;grid-template-columns:125px minmax(0,1fr);gap:14px;align-items:center;margin-bottom:17px }
-    .detail-top img { width:125px;height:130px;object-fit:contain;filter:drop-shadow(0 13px 18px #0004) }
-    .detail-top h2 { font-size:23px }
-    .detail-top .num { font-size:11px;color:var(--mint);font-weight:900;letter-spacing:1.4px }
-    .detail-top p { font-size:12px;color:var(--muted);margin:6px 0 0 }
-    .line { border-top:1px solid #27394e;margin:16px 0 }
-    .form-grid { display:grid;grid-template-columns:1fr 1fr;gap:10px }
-    .field { margin-bottom:12px;min-width:0 }
-    .field label { display:block;margin:0 0 5px;font-size:12px;font-weight:750;color:#c5d5e6 }
-    .field .hint { font-size:11px;color:var(--muted);margin-top:5px }
-    .toggle { display:flex;gap:10px;align-items:center;font-size:13px;font-weight:700;padding:11px;border-radius:12px;background:#17283a;margin:9px 0 13px;border:1px solid #2b4057 }
-    .toggle input { accent-color:#6ae4b9;width:17px;height:17px;flex:0 0 auto }
-    .danger { color:var(--red);font-size:12px }
-    .challenge { padding:13px;background:#101c2d;border:1px solid #304761;border-radius:13px }
-    .challenge h3 { font-size:14px;margin:0 0 5px }
-    .challenge .dim { font-size:12px;margin:0 0 10px }
-    .codebox { background:#080f1a;border:1px dashed #3f6582;border-radius:11px;padding:12px 13px;margin:10px 0;display:flex;justify-content:space-between;align-items:center;gap:10px }
-    .codebox code { font:750 18px ui-monospace,SFMono-Regular,Consolas,monospace;color:var(--gold);letter-spacing:2px }
-    .locked { font-size:13px;color:#9fadc0 }
-    .notice { background:#122737;border:1px solid #2b5668;border-radius:12px;padding:12px;color:#a9cddd;font-size:12px;line-height:1.5 }
-    .foot { color:var(--muted);font-size:12px;line-height:1.6;padding:28px 0 36px }
-    .empty { padding:45px 20px;text-align:center;color:var(--muted);border:1px dashed var(--outline);border-radius:14px }
-    .toast { position:fixed;bottom:24px;right:24px;background:#e9fff7;color:#103329;padding:12px 15px;border-radius:10px;font-weight:800;font-size:13px;box-shadow:0 12px 38px #0008;opacity:0;pointer-events:none;transform:translateY(12px);transition:.2s;z-index:10 }
-    .toast.visible { opacity:1;transform:translateY(0) }
-    @media(max-width:1100px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.main-grid{grid-template-columns:minmax(0,1fr) 340px}.dex-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
-    @media(max-width:800px){.main-grid{display:flex;flex-direction:column}.left,.right{width:100%}.right{position:static}.details{max-height:none}.dex-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
-    @media(max-width:560px){.shell{width:min(100% - 24px,1460px)}.stats{grid-template-columns:1fr 1fr;gap:8px}.stat{padding:13px}.stat strong{font-size:24px}.stat-label{font-size:11px}.dex-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.filter-row{grid-template-columns:1fr}.detail-top{grid-template-columns:100px 1fr}.detail-top img{width:100px;height:110px}.actions{width:100%}.actions .btn{flex:1}}
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0b1220">
+<title>Runkeeper — Pokémon Nuzlocke Tracker</title>
+<meta name="description" content="Personal Pokémon Quetzal Nuzlocke tracker: teams, encounters, fallen Pokémon, badges, level caps, and multiple runs.">
+<style>
+:root{color-scheme:dark;--bg:#090f1c;--panel:#111d2e;--panel2:#16253a;--border:#2b3c55;--ink:#eef5ff;--muted:#a1b1c8;--mint:#72ebbe;--gold:#ffc978;--red:#ff8394;--blue:#8db7ff}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 15% 0%,#223455 0%,transparent 36%),radial-gradient(ellipse at 90% 13%,#102d2e 0%,transparent 36%),var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+button,input,select,textarea{font:inherit}button{cursor:pointer}input,select,textarea{background:#0d1727;color:var(--ink);border:1px solid #42536a;border-radius:11px;padding:10px 12px;min-width:0;max-width:100%}textarea{resize:vertical;min-height:74px}input:focus,select:focus,textarea:focus,button:focus-visible{outline:2px solid var(--mint);outline-offset:2px}label{display:block;font-size:12px;font-weight:750;color:#c4d4e8;margin-bottom:5px}
+.wrap{max-width:1350px;margin:auto;padding:25px 24px 40px}
+.eyebrow{letter-spacing:.22em;font-size:11px;color:var(--mint);font-weight:800;text-transform:uppercase}
+.hero{display:flex;gap:20px;justify-content:space-between;align-items:center;margin:12px 0 20px}.hero h1{font-size:clamp(28px,4vw,45px);margin:0;letter-spacing:-.045em;line-height:1.12}.hero p{margin:9px 0 0;color:var(--muted);max-width:600px}.hero-actions,.actions{display:flex;gap:9px;flex-wrap:wrap;align-items:center}.hero-actions select{min-width:175px}
+.btn{border:1px solid var(--border);background:#1d304a;color:#eef5ff;border-radius:11px;padding:10px 14px;font-size:13px;font-weight:800;white-space:nowrap}.btn:hover{border-color:#6f98b9;background:#25405e}.btn.primary{background:var(--mint);color:#0b2724;border-color:var(--mint)}.btn.ghost{background:transparent}.btn.danger{color:var(--red);border-color:#744957}.btn.small{padding:7px 10px;font-size:12px}.btn:disabled{opacity:.4;cursor:default}
+.nav{display:flex;gap:9px;overflow:auto;border-bottom:1px solid var(--border);margin:14px 0 22px;padding:0 0 10px}.tab{border:0;border-radius:10px;background:transparent;color:var(--muted);font-weight:800;padding:10px 14px;white-space:nowrap}.tab.active{background:#1d3851;color:var(--mint)}
+.view{display:none}.view.active{display:block}
+.panel{border:1px solid var(--border);background:linear-gradient(155deg,#142239,#101a2b);border-radius:17px;padding:20px;min-width:0}.panel h2{font-size:18px;margin:0}.panel h3{font-size:15px;margin:0}.panel .sub{color:var(--muted);font-size:12px;margin:4px 0 0}
+.section-heading{display:flex;gap:12px;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap}.section-heading p{color:var(--muted);font-size:12px;margin:4px 0 0}
+.stats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;margin:0 0 16px}.stat{border:1px solid var(--border);background:#142339;border-radius:14px;padding:16px}.stat .label{font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);font-weight:850}.stat strong{font-size:29px;display:block;margin-top:3px}.stat small{font-size:11px;color:var(--muted)}
+.layout{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(270px,1fr);gap:16px}.stack{display:grid;gap:16px}.teamgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.mon{border:1px solid #38516a;background:linear-gradient(125deg,#1b3046,#132238);border-radius:14px;padding:13px;min-width:0}.mon-top{display:flex;gap:11px;align-items:center}.mon img{width:76px;height:76px;object-fit:contain;filter:drop-shadow(0 6px 8px #0005)}.mon h3{font-size:16px;line-height:1.2;margin:0}.dim{color:var(--muted)}.micro{font-size:11px}.mon .species{color:#b9d1e5;font-size:12px}.mon-meta{display:flex;gap:6px;flex-wrap:wrap;margin:9px 0}.pill{font-size:10px;font-weight:850;border:1px solid #446276;background:#1d3b4b;color:#c2e6ef;border-radius:99px;padding:4px 8px}.pill.team{color:var(--mint);border-color:#347761}.pill.fallen{color:#ff9aa7;border-color:#8d4d5f}.pill.boxed{color:#c0c6ff;border-color:#626895}
+.empty{border:1px dashed #466079;border-radius:12px;color:var(--muted);padding:22px;text-align:center;font-size:13px}.empty-slot{display:flex;align-items:center;justify-content:center;min-height:144px}
+.badge-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}.gym-badge{border:1px solid #40536a;background:#17263a;color:#8897ac;border-radius:12px;padding:13px 5px;text-align:center;font-weight:850}.gym-badge.earned{background:#243d35;border-color:#4bbf95;color:#a6ffe0}.gym-badge small{display:block;font-size:10px;font-weight:600}
+.notice{background:#132d34;border:1px solid #285b5d;padding:12px;border-radius:12px;font-size:12px;color:#bbdfe3;margin-top:13px}.alert{border-color:#924f5e;background:#3d2734;color:#ffcbd3}
+.entry{display:flex;justify-content:space-between;gap:12px;padding:11px 0;border-bottom:1px solid #293d52;align-items:center}.entry:last-child{border:0}.entry strong{font-size:13px}.entry small{font-size:11px;color:var(--muted);display:block}.entry .right{flex-shrink:0}
+.toolbar{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-bottom:16px}.filters{display:flex;gap:9px;flex-wrap:wrap}.filters input{min-width:200px}
+.roster{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.roster .mon{min-height:150px}
+.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}.field{min-width:0}.field input,.field select,.field textarea{width:100%}
+.footer{border-top:1px solid var(--border);padding-top:22px;margin-top:30px;color:var(--muted);font-size:12px;line-height:1.6}.footer a{color:var(--mint)}.dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--mint);margin-right:6px}
+dialog{border:1px solid #507087;border-radius:17px;color:var(--ink);background:#142137;width:min(650px,calc(100% - 24px));padding:0;box-shadow:0 40px 90px #000b;max-height:90vh;overflow:auto}dialog::backdrop{background:#030b16cc}.modalhead{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #31465b;padding:18px 20px}.modalhead h2{margin:0;font-size:19px}.modalbody{padding:20px}.modalactions{display:flex;justify-content:flex-end;gap:9px;margin-top:19px}.close{background:transparent;border:0;color:var(--muted);font-size:22px;padding:0 5px}
+.rulelist{font-size:13px;color:#b9cbde;line-height:1.8;padding-left:20px}
+#toast{position:fixed;right:15px;bottom:18px;background:#b9f4db;color:#123429;font-size:13px;font-weight:800;border-radius:11px;padding:12px 16px;box-shadow:0 15px 40px #0008;opacity:0;pointer-events:none;transform:translateY(12px);transition:.2s;z-index:30}#toast.show{opacity:1;transform:translateY(0)}
+@media(max-width:1060px){.stats{grid-template-columns:repeat(3,1fr)}.roster{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:760px){.wrap{padding:17px 13px 35px}.hero{display:block}.hero-actions{margin-top:16px}.layout{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}.teamgrid{grid-template-columns:1fr 1fr}}
+@media(max-width:500px){.teamgrid,.roster,.form-grid{grid-template-columns:1fr}.stat strong{font-size:24px}.hero h1{font-size:29px}.hero-actions select{min-width:140px}.panel{padding:15px}.filters input{min-width:120px;flex:1}}
+</style>
 </head>
-<body>
-<div class="shell">
-  <header class="masthead">
-    <div class="brand"><div class="ball" aria-hidden="true"></div><div><div class="eyebrow">Your collection. Your rules.</div><h1>THE LIVING DEX</h1></div></div>
-    <div class="actions"><button id="export" class="btn primary">↓ Export backup</button><button id="import" class="btn">↑ Import backup</button><input id="importFile" type="file" accept=".json,application/json" hidden></div>
-  </header>
-  <section class="stats">
-    <div class="panel stat"><div class="stat-label">National Living Pokédex</div><strong><span id="totalHave">0</span> <span class="dim">/ 1,025</span></strong><div class="progress"><div id="totalBar" class="bar"></div></div><div id="totalPercent" class="dim">0.0% completed</div></div>
-    <div class="panel stat"><div class="stat-label">Selected generation</div><strong id="genHave">0 / 151</strong><div class="dim" id="genLabel">Generation 1 • Kanto</div></div>
-    <div class="panel stat"><div class="stat-label">Pokémon nicknamed</div><strong id="nickCount">0</strong><div class="dim">Unique nicknames recorded</div></div>
-    <div class="panel stat"><div class="stat-label">Spawn challenges ready</div><strong id="readyCount">0</strong><div class="dim">Earned encounter codes</div></div>
-  </section>
-  <main class="main-grid">
-    <section class="left">
-      <div class="section-head"><div><h2>National Pokédex</h2><div class="subtext" id="loadMessage">Loading species names…</div></div><div class="subtext" id="resultCount"></div></div>
-      <div class="toolbar"><div class="gens" id="gens"></div><div class="filter-row"><input id="search" type="search" placeholder="Search species, dex number, or nickname…" aria-label="Search Pokémon"><select id="filter" aria-label="Filter entries"><option value="all">All Pokémon</option><option value="missing">Still missing</option><option value="obtained">Collected</option><option value="challenge">Spawn challenges</option><option value="ready">Challenges unlocked</option></select></div></div>
-      <div id="pokemonGrid" class="dex-grid" aria-live="polite"></div><div class="pager"><button class="btn" id="prev">← Previous</button><span id="pageInfo"></span><button class="btn" id="next">Next →</button></div>
-    </section>
-    <aside class="right"><div id="details" class="panel details"></div></aside>
-  </main>
-  <footer class="foot">Personal fan-made collection tracker. All trademarks and artwork belong to their respective owners. Species list: PokéAPI. This website tracks your progress—it does not alter emulator memory or transfer Pokémon to official games. <strong>Export backups regularly.</strong> Local data is stored in this browser only.</footer>
+<body><div class="wrap">
+<div class="eyebrow">Pokémon Quetzal · Challenge Journal</div>
+<header class="hero"><div><h1>NUZLOCKE <span style="color:var(--mint)">RUNKEEPER</span></h1><p>Every encounter matters. Track your squad, fallen partners, badges, level caps, and every attempt to become Champion.</p></div>
+<div class="hero-actions"><select id="runPicker" aria-label="Choose Nuzlocke run"></select><button class="btn primary" id="newRun">+ New Run</button><button class="btn" id="export">↓ Backup</button><button class="btn ghost" id="import">↑ Restore</button><input id="importFile" type="file" accept=".json,application/json" hidden></div></header>
+<nav class="nav" aria-label="Tracker pages"><button class="tab active" data-view="overview">Overview</button><button class="tab" data-view="pokemon">Pokémon</button><button class="tab" data-view="encounters">Encounters</button><button class="tab" data-view="history">Run History & Rules</button></nav>
+<section id="overview" class="view active">
+<div class="section-heading"><div><h2 id="runHeading" style="margin:0;font-size:23px">Run #1</h2><p id="runCaption">Pokémon Quetzal</p></div><div class="actions"><span id="runStatus" class="pill team">ACTIVE</span><button class="btn small" id="editRun">⚙ Run settings</button></div></div>
+<div class="stats" id="stats"></div>
+<div class="layout"><div class="stack">
+<div class="panel"><div class="section-heading"><div><h2>Active Team</h2><p>Your current six Pokémon</p></div><button class="btn small primary" data-add-pokemon>+ Add Pokémon</button></div><div class="teamgrid" id="team"></div></div>
+<div class="panel"><div class="section-heading"><div><h2>Recently Recorded</h2><p>Latest Pokémon and encounters</p></div><button class="btn small" data-tab="encounters">View encounters</button></div><div id="recent"></div></div>
+</div><div class="stack">
+<div class="panel"><div class="section-heading"><div><h2>Gym Badges</h2><p>Tap a badge when earned</p></div><span id="badgeCount" class="pill">0 / 8</span></div><div class="badge-grid" id="badges"></div></div>
+<div class="panel"><div class="section-heading"><div><h2>Level Cap</h2><p>Set for your next Gym</p></div><button class="btn small" id="editCap">Edit</button></div><div id="capSummary"></div></div>
+<div class="panel"><div class="section-heading"><div><h2>In Memoriam</h2><p>Pokémon permanently retired after fainting</p></div><span id="deathCount" class="pill fallen">0 fallen</span></div><div id="memorial"></div></div>
+</div></div></section>
+<section id="pokemon" class="view"><div class="section-heading"><div><h2>Pokémon Roster</h2><p>Every partner from this run, including boxed and fallen Pokémon</p></div><button class="btn primary" data-add-pokemon>+ Add Pokémon</button></div><div class="toolbar"><div class="filters"><input id="pokeSearch" type="search" placeholder="Search nickname or species…"><select id="pokeFilter"><option value="All">All Pokémon</option><option value="Team">Team</option><option value="Boxed">Boxed</option><option value="Fallen">Fallen</option></select></div><span id="rosterCount" class="dim micro"></span></div><div id="roster" class="roster"></div></section>
+<section id="encounters" class="view"><div class="section-heading"><div><h2>Encounter Log</h2><p>Record the first eligible encounter on each route, cave, or area</p></div><button class="btn primary" id="addEncounter">+ Log Encounter</button></div><div class="panel"><div id="encounterList"></div></div><p class="dim micro">Each area normally grants one eligible encounter. Apply your dupes clause when relevant; the tracker records decisions but does not automatically validate game rules.</p></section>
+<section id="history" class="view"><div class="layout"><div class="panel"><div class="section-heading"><div><h2>Playthrough History</h2><p>All runs saved separately</p></div><button class="btn small primary" id="historyNew">+ New Run</button></div><div id="runHistory"></div></div><div class="panel"><h2>Our Nuzlocke Rules</h2><ol class="rulelist"><li>Catch only the first eligible wild encounter per area.</li><li>Dupes clause: you may reroll a species or evolutionary line already obtained this run.</li><li>Nickname every Pokémon.</li><li>A fainted Pokémon is permanently retired from the run.</li><li>Do not enter a Gym battle above its level cap.</li><li>No healing or battle-enhancing bag items in trainer battles; held items are allowed.</li><li>If all usable Pokémon are lost, mark the run as wiped.</li><li>Starter is a free encounter; no encounter cheats during the run.</li></ol><div class="notice">Gym levels vary by Quetzal version and settings. Enter your verified next Gym and level cap manually.</div></div></div></section>
+<footer class="footer"><span class="dot"></span><span id="syncStatus">Loading saved run…</span><p>Edits on this website are saved in this browser. When ChatGPT updates <code>nuzlocke-data.json</code> in GitHub, refresh this page to load those records; web edits do not automatically upload to GitHub. Download backups regularly. The old Living Dex files are preserved in the repository's <code>archive/</code> folder.</p><a href="https://github.com/Rzyin1/living-dex" target="_blank" rel="noopener">View GitHub repository</a></footer>
 </div>
-<div class="toast" id="toast" role="status"></div>
+<dialog id="pokemonDialog"><div class="modalhead"><h2 id="pokeDialogTitle">Add Pokémon</h2><button class="close" data-close="pokemonDialog" aria-label="Close">×</button></div><form id="pokemonForm" class="modalbody"><input type="hidden" id="monId"><div class="form-grid">
+<div class="field"><label>Species *</label><input id="monSpecies" required maxlength="60" placeholder="Bulbasaur"></div>
+<div class="field"><label>National Dex # (for artwork)</label><input id="monDex" type="number" min="1" max="1300" placeholder="001"></div>
+<div class="field"><label>Nickname *</label><input id="monNickname" required maxlength="20" placeholder="Sprout"></div>
+<div class="field"><label>Current level *</label><input id="monLevel" type="number" min="1" max="100" required value="5"></div>
+<div class="field"><label>Status</label><select id="monStatus"><option>Team</option><option>Boxed</option><option>Fallen</option></select></div>
+<div class="field"><label>Gender</label><select id="monGender"><option value="">Not recorded</option><option>Male</option><option>Female</option><option>Genderless</option></select></div>
+<div class="field"><label>Nature</label><select id="monNature"><option value="">Unknown</option></select></div>
+<div class="field"><label>Ability</label><input id="monAbility" maxlength="60" placeholder="Overgrow"></div>
+<div class="field"><label>Encounter location *</label><input id="monLocation" required maxlength="100" placeholder="Route 101 / Starter"></div>
+<div class="field"><label>Level obtained</label><input id="monMet" type="number" min="1" max="100"></div>
+<div class="field"><label>Moves (comma-separated)</label><input id="monMoves" maxlength="180" placeholder="Tackle, Growl"></div>
+<div class="field"><label>Cause of fainting (if fallen)</label><input id="monDeath" maxlength="180" placeholder="Opposing Pokémon / battle"></div>
+</div><div class="field" style="margin-top:14px"><label>IVs — HP, Attack, Defense, Sp. Attack, Sp. Defense, Speed</label><div class="form-grid" style="grid-template-columns:repeat(6,minmax(0,1fr));gap:7px"><input id="ivHp" type="number" min="0" max="31" placeholder="HP" aria-label="HP IV"><input id="ivAt" type="number" min="0" max="31" placeholder="Atk" aria-label="Attack IV"><input id="ivDf" type="number" min="0" max="31" placeholder="Def" aria-label="Defense IV"><input id="ivSa" type="number" min="0" max="31" placeholder="SpA" aria-label="Special Attack IV"><input id="ivSd" type="number" min="0" max="31" placeholder="SpD" aria-label="Special Defense IV"><input id="ivSp" type="number" min="0" max="31" placeholder="Spe" aria-label="Speed IV"></div></div>
+<div class="field" style="margin-top:14px"><label>Notes</label><textarea id="monNotes" maxlength="2000" placeholder="Battle history, evolution plans, memories…"></textarea></div>
+<div class="modalactions"><button type="button" class="btn" data-close="pokemonDialog">Cancel</button><button type="submit" class="btn primary">Save Pokémon</button></div></form></dialog>
+<dialog id="encounterDialog"><div class="modalhead"><h2>Log Encounter</h2><button class="close" data-close="encounterDialog" aria-label="Close">×</button></div><form id="encounterForm" class="modalbody"><input type="hidden" id="encId"><div class="form-grid"><div class="field"><label>Route / Area *</label><input id="encArea" required maxlength="100" placeholder="Route 101"></div><div class="field"><label>Pokémon</label><input id="encSpecies" maxlength="60" placeholder="Zigzagoon"></div><div class="field"><label>Outcome</label><select id="encResult"><option>Caught</option><option>Missed</option><option>Skipped (dupes)</option><option>Not reached</option></select></div><div class="field"><label>Nickname (if caught)</label><input id="encNick" maxlength="20" placeholder="Optional"></div></div><div class="field" style="margin-top:14px"><label>Notes</label><textarea id="encNotes" maxlength="2000" placeholder="First encounter, dupes, special conditions…"></textarea></div><div class="modalactions"><button class="btn" type="button" data-close="encounterDialog">Cancel</button><button class="btn primary" type="submit">Save Encounter</button></div></form></dialog>
+<dialog id="runDialog"><div class="modalhead"><h2>Run Settings</h2><button class="close" data-close="runDialog" aria-label="Close">×</button></div><form id="runForm" class="modalbody"><div class="form-grid"><div class="field"><label>Run name *</label><input id="settingName" required maxlength="100"></div><div class="field"><label>Game</label><input id="settingGame" maxlength="60"></div><div class="field"><label>Status</label><select id="settingStatus"><option>Active</option><option>Champion</option><option>Wiped</option><option>Retired</option></select></div><div class="field"><label>Start date</label><input id="settingDate" type="date"></div><div class="field"><label>Next Gym</label><input id="settingGym" maxlength="70" placeholder="e.g. Roxanne"></div><div class="field"><label>Next Gym level cap</label><input id="settingCap" type="number" min="1" max="100" placeholder="Verified cap"></div></div><div class="field" style="margin-top:14px"><label>Run notes</label><textarea id="settingNotes" maxlength="4000"></textarea></div><div class="modalactions"><button type="button" class="btn" data-close="runDialog">Cancel</button><button type="submit" class="btn primary">Save Run</button></div></form></dialog>
+<div id="toast" role="status" aria-live="polite"></div>
 <script>
+(function(){
 'use strict';
-const MAX=1025, KEY='ryzin-living-dex-v1', REMOTE_KEY='ryzin-living-dex-github-snapshot-v1';
-const GEN=[{name:'Kanto',start:1,end:151},{name:'Johto',start:152,end:251},{name:'Hoenn',start:252,end:386},{name:'Sinnoh',start:387,end:493},{name:'Unova',start:494,end:649},{name:'Kalos',start:650,end:721},{name:'Alola',start:722,end:809},{name:'Galar / Hisui',start:810,end:905},{name:'Paldea',start:906,end:1025}];
-const NATURES=['Hardy','Lonely','Brave','Adamant','Naughty','Bold','Docile','Relaxed','Impish','Lax','Timid','Hasty','Serious','Jolly','Naive','Modest','Mild','Quiet','Bashful','Rash','Calm','Gentle','Sassy','Careful','Quirky'];
-const G1_NAMES=`Bulbasaur|Ivysaur|Venusaur|Charmander|Charmeleon|Charizard|Squirtle|Wartortle|Blastoise|Caterpie|Metapod|Butterfree|Weedle|Kakuna|Beedrill|Pidgey|Pidgeotto|Pidgeot|Rattata|Raticate|Spearow|Fearow|Ekans|Arbok|Pikachu|Raichu|Sandshrew|Sandslash|Nidoran♀|Nidorina|Nidoqueen|Nidoran♂|Nidorino|Nidoking|Clefairy|Clefable|Vulpix|Ninetales|Jigglypuff|Wigglytuff|Zubat|Golbat|Oddish|Gloom|Vileplume|Paras|Parasect|Venonat|Venomoth|Diglett|Dugtrio|Meowth|Persian|Psyduck|Golduck|Mankey|Primeape|Growlithe|Arcanine|Poliwag|Poliwhirl|Poliwrath|Abra|Kadabra|Alakazam|Machop|Machoke|Machamp|Bellsprout|Weepinbell|Victreebel|Tentacool|Tentacruel|Geodude|Graveler|Golem|Ponyta|Rapidash|Slowpoke|Slowbro|Magnemite|Magneton|Farfetch’d|Doduo|Dodrio|Seel|Dewgong|Grimer|Muk|Shellder|Cloyster|Gastly|Haunter|Gengar|Onix|Drowzee|Hypno|Krabby|Kingler|Voltorb|Electrode|Exeggcute|Exeggutor|Cubone|Marowak|Hitmonlee|Hitmonchan|Lickitung|Koffing|Weezing|Rhyhorn|Rhydon|Chansey|Tangela|Kangaskhan|Horsea|Seadra|Goldeen|Seaking|Staryu|Starmie|Mr. Mime|Scyther|Jynx|Electabuzz|Magmar|Pinsir|Tauros|Magikarp|Gyarados|Lapras|Ditto|Eevee|Vaporeon|Jolteon|Flareon|Porygon|Omanyte|Omastar|Kabuto|Kabutops|Aerodactyl|Snorlax|Articuno|Zapdos|Moltres|Dratini|Dragonair|Dragonite|Mewtwo|Mew`.split('|');
-const G1_HEX=`99 09 9A B0 B2 B4 B1 B3 1C 7B 7C 7D 70 71 72 24 96 97 A5 A6 05 23 6C 2D 54 55 60 61 0F A8 10 03 A7 07 04 8E 52 53 64 65 6B 82 B9 BA BB 6D 2E 41 77 3B 76 4D 90 2F 80 34 75 21 14 47 6E 6F 94 26 95 6A 29 7E BC BD BE 18 9B A9 27 31 A3 A4 25 08 AD 36 40 46 74 3A 78 0D 88 17 8B 19 93 0E 22 30 81 4E 8A 06 8D 0C 0A 11 91 2B 2C 0B 37 8F 12 01 28 1E 02 5C 5D 9D 9E 1B 98 2A 1A 48 35 33 1D 3C 85 16 13 4C 66 69 68 67 AA 62 63 5A 5B AB 84 4A 4B 49 58 59 42 83 15`.split(' ');
-if(G1_NAMES.length!==151||G1_HEX.length!==151) throw Error('Gen 1 mapping incomplete');
-const $=id=>document.getElementById(id), esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-let records={},species=Array.from({length:MAX},(_,k)=>k<151?G1_NAMES[k]:`Pokémon #${k+1}`),gen=1,filter='all',search='',page=0,selected=1;
-try { const stored=JSON.parse(localStorage.getItem(KEY)||'{}'); if(stored&&typeof stored==='object'&&!Array.isArray(stored))records=stored }catch(e){console.warn('Corrupted collection state',e)}
-function save(){try{localStorage.setItem(KEY,JSON.stringify(records))}catch(e){notify('Storage blocked. Export a backup.')}}
-function notify(t){const el=$('toast');el.textContent=t;el.classList.add('visible');clearTimeout(notify.timer);notify.timer=setTimeout(()=>el.classList.remove('visible'),2800)}
-function artwork(n){return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${n}.png`}
-function sprite(n){return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${n}.png`}
-function displayName(s){return s.split('-').map(w=>w.charAt(0).toUpperCase()+w.slice(1)).join(' ')}
-function generation(n){return GEN.findIndex(x=>x.start<=n&&x.end>=n)+1}
-function get(n){return records[n]||{}}
-function update(n,patch){records[n]={...get(n),...patch};save();stats();renderGrid();renderDetails()}
-function stats(){const all=Array.from({length:MAX},(_,k)=>get(k+1)), total=all.filter(x=>x.obtained).length, g=gen?GEN[gen-1]:{name:'All regions',start:1,end:MAX}, sub=all.slice(g.start-1,g.end), have=sub.filter(x=>x.obtained).length; $('totalHave').textContent=total; $('totalBar').style.width=(total/MAX*100).toFixed(2)+'%';$('totalPercent').textContent=(total/MAX*100).toFixed(1)+'% completed';$('genHave').textContent=`${have} / ${g.end-g.start+1}`;$('genLabel').textContent=gen?`Generation ${gen} • ${g.name}`:'All generations';$('nickCount').textContent=all.filter(x=>x.nickname?.trim()).length;$('readyCount').textContent=all.filter(x=>x.spawn&&x.challengeDone&&!x.obtained).length}
-function renderTabs(){ $('gens').innerHTML=`<button class="tab ${gen===0?'active':''}" data-gen="0">All generations</button>`+GEN.map((v,k)=>`<button class="tab ${gen===k+1?'active':''}" data-gen="${k+1}">Gen ${k+1}</button>`).join('');document.querySelectorAll('[data-gen]').forEach(b=>b.addEventListener('click',()=>{gen=Number(b.dataset.gen);page=0;renderTabs();stats();renderGrid()})) }
-function matching(){let arr=Array.from({length:MAX},(_,k)=>k+1);if(gen)arr=arr.filter(n=>generation(n)===gen);if(search){const q=search.toLowerCase().trim();arr=arr.filter(n=>species[n-1].toLowerCase().includes(q)||String(n)===q||String(n).padStart(3,'0')===q||get(n).nickname?.toLowerCase().includes(q))}if(filter==='missing')arr=arr.filter(n=>!get(n).obtained);if(filter==='obtained')arr=arr.filter(n=>get(n).obtained);if(filter==='challenge')arr=arr.filter(n=>get(n).spawn);if(filter==='ready')arr=arr.filter(n=>get(n).spawn&&get(n).challengeDone&&!get(n).obtained);return arr}
-function renderGrid(){const all=matching(),size=60,maxPage=Math.max(0,Math.ceil(all.length/size)-1);page=Math.min(page,maxPage);const shown=all.slice(page*size,(page+1)*size);$('resultCount').textContent=`${all.length.toLocaleString()} entries`;$('pokemonGrid').className=shown.length?'dex-grid':'empty';$('pokemonGrid').innerHTML=shown.map(n=>{const d=get(n);return `<button class="poke ${d.obtained?'obtained':''} ${selected===n?'active':''}" data-poke="${n}" aria-label="${esc(species[n-1])}, ${d.obtained?'collected':'missing'}"><span class="number">#${String(n).padStart(4,'0')}</span>${d.obtained?'<span class="check">✓</span>':''}<img loading="lazy" src="${artwork(n)}" onerror="this.onerror=null;this.src='${sprite(n)}'" alt=""><span class="species">${esc(species[n-1])}</span><span class="nick">${d.nickname?esc(d.nickname):'No nickname yet'}</span><span class="pill">${d.obtained?'● COLLECTED':d.spawn?(d.challengeDone?'✦ UNLOCKED':'◈ CHALLENGE'):'○ MISSING'}</span></button>`}).join('')||'No Pokémon match your filters.';$('pageInfo').textContent=`${all.length? page*size+1:0}–${Math.min(all.length,(page+1)*size)} of ${all.length}`;$('prev').disabled=page===0;$('next').disabled=page>=maxPage;document.querySelectorAll('[data-poke]').forEach(b=>b.addEventListener('click',()=>{selected=Number(b.dataset.poke);renderGrid();renderDetails();if(window.innerWidth<801)$('details').scrollIntoView({behavior:'smooth',block:'start'})})) }
-function sampleChallenge(n){if(n===151)return 'Postgame challenge: Defeat the Elite Four again using no Legendary Pokémon. Then unlock Mew.';if([144,145,146,150].includes(n))return 'Legendary trial: Win 10 trainer battles without any Pokémon fainting, then unlock this encounter.';if([3,6,9,65,68,76,94,133,134,135,136].includes(n))return 'Training trial: Win 5 trainer battles using Pokémon at or below your next Gym Leader’s highest level.';if([1,4,7].includes(n))return 'Starter trial: Catch 12 different species and defeat one Gym Leader before unlocking this starter.';return 'Explorer trial: Catch 5 new species and win 3 trainer battles without using healing items during battle.'}
-function renderDetails(){const n=selected,d=get(n),code=n<=151?'01'+G1_HEX[n-1]+'D8CF':null,lim=generation(n)<=5?10:12, ready=d.spawn&&d.challengeDone&&!d.obtained;
-  $('details').innerHTML=`<div class="detail-top"><img src="${artwork(n)}" onerror="this.onerror=null;this.src='${sprite(n)}'" alt="${esc(species[n-1])}"><div><div class="num">NATIONAL #${String(n).padStart(4,'0')}</div><h2>${esc(species[n-1])}</h2><p>Generation ${generation(n)} • ${d.obtained?'✓ In your collection':'Not yet collected'}</p></div></div>
-  <div class="field"><label for="nickname">Pokémon nickname</label><input type="text" id="nickname" maxlength="${lim}" placeholder="Give this Pokémon a name…" value="${esc(d.nickname||'')}"><div class="hint">${lim}-character nickname limit for this generation. Nickname before marking collected.</div></div>
-  <div class="form-grid"><div class="field"><label for="source">Game obtained in</label><input id="source" type="text" maxlength="50" placeholder="e.g. Pokémon FireRed" value="${esc(d.source||'')}"></div><div class="field"><label for="location">Storage location</label><input id="location" type="text" maxlength="50" placeholder="e.g. Box 1 / Slot 2" value="${esc(d.location||'')}"></div></div>
-   <div class="form-grid"><div class="field"><label for="nature">Nature</label><select id="nature"><option value="">Select nature…</option>${NATURES.map(x=>`<option value="${x}" ${d.nature===x?'selected':''}>${x}</option>`).join('')}</select></div><div class="field"><label for="ability">Ability</label><input id="ability" type="text" maxlength="60" placeholder="e.g. Overgrow" value="${esc(d.ability||'')}"></div></div>
-   <div class="form-grid"><div class="field"><label for="encounterLocation">Caught / received at</label><input id="encounterLocation" type="text" maxlength="100" placeholder="e.g. Pallet Town — Oak's Lab" value="${esc(d.encounterLocation||'')}"></div><div class="field"><label for="metLevel">Level when obtained</label><input id="metLevel" type="number" min="1" max="100" placeholder="e.g. 5" value="${esc(d.metLevel??'')}"></div></div>
-   <div class="form-grid"><div class="field"><label for="gender">Gender</label><select id="gender"><option value="">Not recorded</option><option value="Male" ${d.gender==='Male'?'selected':''}>Male ♂</option><option value="Female" ${d.gender==='Female'?'selected':''}>Female ♀</option><option value="Genderless" ${d.gender==='Genderless'?'selected':''}>Genderless</option></select></div><div class="field"><label for="currentLevel">Current level</label><input id="currentLevel" type="number" min="1" max="100" value="${esc(d.currentLevel??'')}"></div></div>
-   <div class="form-grid"><div class="field"><label for="trainerName">Original trainer (OT)</label><input id="trainerName" maxlength="24" value="${esc(d.trainerName||'')}"></div><div class="field"><label for="trainerId">Trainer ID</label><input id="trainerId" maxlength="10" value="${esc(d.trainerId||'')}"></div></div>
-   <div class="field"><label for="plannedEvolution">Planned final evolution</label><input id="plannedEvolution" maxlength="60" placeholder="e.g. Venusaur" value="${esc(d.plannedEvolution||'')}"><div class="hint">This Pokémon remains registered under its current species until it evolves.</div></div>
-  <label class="toggle"><input id="obtained" type="checkbox" ${d.obtained?'checked':''}> Mark as caught, nicknamed & kept</label>
-  <div class="line"></div><div class="challenge"><h3>⚡ Challenge encounter</h3><p class="dim">Use this for version exclusives, trade evolutions, Mythicals, or any Pokémon you choose to unlock through a challenge.</p><label class="toggle"><input id="spawn" type="checkbox" ${d.spawn?'checked':''}> I want to unlock this Pokémon through a challenge</label><div id="spawnFields" ${d.spawn?'':'hidden'}>
-    <div class="field"><label for="challenge">Your unlock requirement</label><textarea id="challenge" placeholder="Describe what you must achieve before spawning it…">${esc(d.challenge||'')}</textarea><button class="btn" type="button" id="suggest">Use suggested challenge</button></div>
-    <label class="toggle"><input id="challengeDone" type="checkbox" ${d.challengeDone?'checked':''}> Challenge completed</label>
-    ${code? (ready?`<div class="codebox"><code>${code}</code><button id="copyCode" class="btn primary">Copy</button></div><p class="dim" style="font-size:11px">For English-language Pokémon Red/Blue (GameShark wild encounter modifier). This code is not the National Dex number. Back up your in-game save first and disable the cheat immediately afterward.</p>`:`<p class="locked">🔒 Complete your challenge to unlock the encounter code.</p>`):`<p class="locked">Cheat codes for this generation will be researched and verified when we get there. This challenge can still be tracked now.</p>`}
-  </div></div><div class="line"></div><div class="field"><label for="notes">Notes</label><textarea id="notes" placeholder="Where you found it, team memories, anything else…">${esc(d.notes||'')}</textarea></div><div class="notice">Only record a Pokémon when you physically keep it in an emulator save or your chosen storage location. GitHub updates are loaded when you open this page; edits you make here stay in this browser unless backed up. This site is a collection log, not Pokémon HOME.</div>`;
-  const simple=['nickname','source','location','nature','ability','encounterLocation','metLevel','gender','currentLevel','trainerName','trainerId','plannedEvolution','notes','challenge'];for(const name of simple){const e=$(name);if(!e)continue;e.addEventListener('change',()=>{if(name==='nickname'&&d.obtained&&!e.value.trim()){e.value=d.nickname||'';notify('Collected Pokémon need a nickname');return} update(n,{[name]:e.value})})}
-  $('obtained').addEventListener('change',e=>{if(e.target.checked&&!($('nickname').value.trim())){e.target.checked=false;notify('Enter a nickname before marking collected');$('nickname').focus();return}update(n,{obtained:e.target.checked,nickname:$('nickname').value,source:$('source').value,location:$('location').value,nature:$('nature').value,ability:$('ability').value,encounterLocation:$('encounterLocation').value,metLevel:$('metLevel').value,gender:$('gender').value,currentLevel:$('currentLevel').value,trainerName:$('trainerName').value,trainerId:$('trainerId').value,plannedEvolution:$('plannedEvolution').value})});
-  $('spawn').addEventListener('change',e=>update(n,{spawn:e.target.checked}));$('challengeDone')?.addEventListener('change',e=>{if(e.target.checked&&!($('challenge')?.value||'').trim()){e.target.checked=false;notify('Set a challenge before completing it');return}update(n,{challengeDone:e.target.checked,challenge:$('challenge').value})});
-  $('suggest')?.addEventListener('click',()=>update(n,{challenge:sampleChallenge(n),challengeDone:false}));$('copyCode')?.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(code);notify(`Copied ${code}`)}catch(e){notify('Select the code and copy it manually')}});
+const KEY='rzyin-nuzlocke-v1',REMOTE_KEY='rzyin-nuzlocke-remote-snapshot-v1',APP='QuetzalNuzlocke',VERSION=1;
+const natures=['Hardy','Lonely','Brave','Adamant','Naughty','Bold','Docile','Relaxed','Impish','Lax','Timid','Hasty','Serious','Jolly','Naive','Modest','Mild','Quiet','Bashful','Rash','Calm','Gentle','Sassy','Careful','Quirky'];
+const $=id=>document.getElementById(id);
+const esc=v=>String(v===undefined||v===null?'':v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const emptyRun=(id,name)=>({id,name,game:'Pokémon Quetzal',started:new Date().toISOString().slice(0,10),status:'Active',nextGym:'',levelCap:'',notes:'',badges:[false,false,false,false,false,false,false,false],pokemon:[],encounters:[]});
+const seed=()=>{let r=emptyRun('quetzal-1','Quetzal — Run #1');r.started='2026-10-24';r.notes='First Quetzal Nuzlocke. Level caps apply; exact next Gym cap pending verification.';r.pokemon=[{id:'sprout-1',species:'Bulbasaur',dex:1,nickname:'Sprout',gender:'Male',level:5,metLevel:5,nature:'Hasty',ability:'Overgrow',location:'Starter Pokémon',status:'Team',moves:'Tackle, Growl, Vine Whip',ivs:{hp:31,attack:28,defense:31,spAttack:31,spDefense:6,speed:1},notes:'Original Quetzal starter. Intended to evolve into Venusaur.',deathCause:''}];r.encounters=[{id:'starter-1',area:'Starter choice',species:'Bulbasaur',result:'Caught',nickname:'Sprout',notes:'Starter exception — does not use a wild-route encounter.'}];return{app:APP,version:VERSION,activeRun:r.id,runs:{[r.id]:r}}};
+let state=seed(),view='overview';
+try{const old=JSON.parse(localStorage.getItem(KEY)||'null');if(old&&old.app===APP&&old.version===VERSION&&old.runs&&typeof old.runs==='object'&&Object.keys(old.runs).length)state=old}catch(e){console.warn('Local backup could not load',e)}
+function run(){return state.runs[state.activeRun]||Object.values(state.runs)[0]}
+function persist(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){toast('Browser storage unavailable. Download a backup.')}}
+function toast(t){$('toast').textContent=t;$('toast').classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>$('toast').classList.remove('show'),3000)}
+function sprite(p){const n=Number(p.dex);return Number.isInteger(n)&&n>0?'<img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/'+n+'.png" alt="" loading="lazy" onerror="this.style.display=\'none\'">':'<div style="font-size:40px;padding:11px">◉</div>'}
+function statusTag(p){const s=p.status||'Boxed';return '<span class="pill '+(s==='Fallen'?'fallen':s==='Team'?'team':'boxed')+'">'+esc(s)+'</span>'}
+function monCard(p){return '<article class="mon"><div class="mon-top">'+sprite(p)+'<div style="min-width:0"><h3>'+esc(p.nickname||p.species||'Unknown')+'</h3><div class="species">'+esc(p.species)+' · Lv. '+esc(p.level||'?')+'</div><div class="micro dim">'+esc(p.nature||'Nature ?')+' · '+esc(p.ability||'Ability ?')+'</div></div></div><div class="mon-meta">'+statusTag(p)+'<span class="pill">'+esc(p.location||'Unknown location')+'</span></div><div class="actions"><button class="btn small" data-edit-mon="'+esc(p.id)+'">Edit details</button>'+(p.status!=='Fallen'?'<button class="btn small danger" data-faint="'+esc(p.id)+'">Mark fallen</button>':'')+'</div></article>'}
+function badgeCount(r){return(r.badges||[]).filter(Boolean).length}
+function drawPicker(){const r=run();if(!r)return;$('runPicker').innerHTML=Object.values(state.runs).map(x=>'<option value="'+esc(x.id)+'" '+(x.id===r.id?'selected':'')+'>'+esc(x.name)+'</option>').join('')}
+function render(){
+ const r=run();if(!r)return;drawPicker();
+ const mons=r.pokemon||[],team=mons.filter(x=>x.status==='Team'),fallen=mons.filter(x=>x.status==='Fallen'),boxed=mons.filter(x=>x.status==='Boxed'),encs=r.encounters||[];
+ $('runHeading').textContent=r.name;$('runCaption').textContent=(r.game||'Pokémon Quetzal')+' · '+(r.started||'Date not set');
+ $('runStatus').textContent=(r.status||'Active').toUpperCase();$('runStatus').className='pill '+(r.status==='Wiped'?'fallen':'team');
+ $('stats').innerHTML=[['Pokémon caught',mons.length,'Registered in this run'],['Active team',team.length+'/6','Available to battle'],['Boxed',boxed.length,'Reserves'],['Fallen',fallen.length,'Permanently retired'],['Gym badges',badgeCount(r)+'/8','Earned so far']].map(a=>'<div class="stat"><div class="label">'+a[0]+'</div><strong>'+a[1]+'</strong><small>'+a[2]+'</small></div>').join('');
+ $('team').innerHTML=team.map(monCard).join('')+Array.from({length:Math.max(0,6-team.length)},()=>'<div class="empty empty-slot">Empty team slot</div>').join('');
+ $('badgeCount').textContent=badgeCount(r)+' / 8';
+ $('badges').innerHTML=Array.from({length:8},(_,i)=>'<button data-badge="'+i+'" class="gym-badge '+(r.badges&&r.badges[i]?'earned':'')+'" aria-pressed="'+!!(r.badges&&r.badges[i])+'">'+(r.badges&&r.badges[i]?'◆':'◇')+'<small>Badge '+(i+1)+'</small></button>').join('');
+ const cap=Number(r.levelCap),tooHigh=cap>0?team.filter(x=>Number(x.level)>cap):[];
+ $('capSummary').innerHTML='<div style="font-size:36px;font-weight:900">'+(cap>0?'Lv. '+cap:'Not set')+'</div><div class="dim">Next Gym: '+esc(r.nextGym||'Not specified')+'</div>'+(cap>0?'<div class="notice '+(tooHigh.length?'alert':'')+'">'+(tooHigh.length?tooHigh.map(x=>esc(x.nickname||x.species)).join(', ')+' above cap.':'Current team is within the cap.')+'</div>':'<div class="notice">Enter the verified Gym Leader level before the battle.</div>');
+ $('deathCount').textContent=fallen.length+' fallen';
+ $('memorial').innerHTML=fallen.length?fallen.slice().reverse().slice(0,6).map(x=>'<div class="entry"><div><strong>'+esc(x.nickname||x.species)+'</strong><small>'+esc(x.species)+' · '+esc(x.deathCause||'Retired from battle')+'</small></div><span class="pill fallen">Fallen</span></div>').join(''):'<div class="empty">No fallen Pokémon. Keep your team safe.</div>';
+ const combined=encs.slice(-4).reverse();$('recent').innerHTML=combined.length?combined.map(x=>'<div class="entry"><div><strong>'+esc(x.area)+'</strong><small>'+esc(x.species||'Unknown')+' · '+esc(x.nickname||'')+'</small></div><span class="pill">'+esc(x.result)+'</span></div>').join(''):'<div class="empty">No encounters recorded yet.</div>';
+ const q=$('pokeSearch').value.trim().toLowerCase(),f=$('pokeFilter').value;
+ const shown=mons.filter(p=>(f==='All'||p.status===f)&&(!q||(p.nickname||'').toLowerCase().includes(q)||(p.species||'').toLowerCase().includes(q)));
+ $('roster').innerHTML=shown.map(monCard).join('')||'<div class="empty">No Pokémon match these filters.</div>';$('rosterCount').textContent=shown.length+' of '+mons.length;
+ $('encounterList').innerHTML=encs.length?encs.map((e,i)=>'<div class="entry"><div><strong>'+esc(e.area)+'</strong><small>'+esc(e.species||'Pokémon not yet determined')+(e.nickname?' · '+esc(e.nickname):'')+'</small><small>'+esc(e.notes||'')+'</small></div><div class="actions"><span class="pill">'+esc(e.result)+'</span><button class="btn small" data-edit-enc="'+esc(e.id)+'">Edit</button></div></div>').join(''):'<div class="empty">No routes logged yet. Log each area’s first eligible encounter.</div>';
+ $('runHistory').innerHTML=Object.values(state.runs).map(x=>'<div class="entry"><div><strong>'+esc(x.name)+'</strong><small>'+esc(x.game)+' · '+esc(x.started||'')+' · '+esc(x.status)+'</small><small>'+x.pokemon.length+' Pokémon · '+badgeCount(x)+'/8 badges · '+x.pokemon.filter(p=>p.status==='Fallen').length+' fallen</small></div><button class="btn small" data-open-run="'+esc(x.id)+'">'+(x.id===r.id?'Current':'Open')+'</button></div>').join('');
 }
-$('search').addEventListener('input',e=>{search=e.target.value;page=0;renderGrid()});$('filter').addEventListener('change',e=>{filter=e.target.value;page=0;renderGrid()});$('prev').addEventListener('click',()=>{page=Math.max(0,page-1);renderGrid();window.scrollTo({top:300,behavior:'smooth'})});$('next').addEventListener('click',()=>{page++;renderGrid();window.scrollTo({top:300,behavior:'smooth'})});
-$('export').addEventListener('click',()=>{const data={app:'LivingDex',version:1,exportedAt:new Date().toISOString(),records};const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=`living-dex-${new Date().toISOString().slice(0,10)}.json`;a.click();setTimeout(()=>URL.revokeObjectURL(url),500);notify('Backup exported')});
-$('import').addEventListener('click',()=>$('importFile').click());$('importFile').addEventListener('change',async e=>{const file=e.target.files?.[0];if(!file)return;try{const obj=JSON.parse(await file.text());if(obj.app!=='LivingDex'||obj.version!==1||!obj.records||typeof obj.records!=='object'||Array.isArray(obj.records))throw new Error('Not a compatible backup');if(!confirm('Replace your current collection with this backup? Export your current data first if you want to keep it.'))return;const clean={};for(const [k,v] of Object.entries(obj.records)){const n=Number(k);if(!Number.isInteger(n)||n<1||n>MAX||!v||typeof v!=='object'||Array.isArray(v))continue;clean[n]={nickname:String(v.nickname||'').slice(0,32),source:String(v.source||'').slice(0,50),location:String(v.location||'').slice(0,50),nature:String(v.nature||'').slice(0,24),ability:String(v.ability||'').slice(0,60),encounterLocation:String(v.encounterLocation||'').slice(0,100),metLevel:String(v.metLevel??'').slice(0,3),gender:String(v.gender||'').slice(0,16),currentLevel:String(v.currentLevel??'').slice(0,3),trainerName:String(v.trainerName||'').slice(0,24),trainerId:String(v.trainerId||'').slice(0,10),plannedEvolution:String(v.plannedEvolution||'').slice(0,60),notes:String(v.notes||'').slice(0,2000),spawn:!!v.spawn,challenge:String(v.challenge||'').slice(0,2000),challengeDone:!!v.challengeDone,obtained:!!v.obtained}}records=clean;save();stats();renderGrid();renderDetails();notify('Backup imported')}catch(err){alert('Could not import backup: '+err.message)}finally{e.target.value=''}});
-async function loadSpecies(){try{const cache=JSON.parse(localStorage.getItem('ryzin-living-dex-species')||'null');if(Array.isArray(cache)&&cache.length===MAX){species=cache;updateSpeciesUI();return}}catch(e){}
- try{const response=await fetch('https://pokeapi.co/api/v2/pokemon-species?limit=1025');if(!response.ok)throw new Error('PokéAPI unavailable');const data=await response.json();for(const v of data.results){const m=v.url.match(/\/pokemon-species\/(\d+)\//);if(!m)continue;const n=Number(m[1]);if(n>151&&n<=MAX)species[n-1]=displayName(v.name)}try{localStorage.setItem('ryzin-living-dex-species',JSON.stringify(species))}catch(e){}updateSpeciesUI()}catch(e){$('loadMessage').textContent='Online Pokédex data unavailable. Gen 1 is ready; other generations show numbers until connected.'}}
-function updateSpeciesUI(){$('loadMessage').textContent='All 1,025 species • Select a Pokémon to edit its entry';renderGrid();renderDetails()}
-// Read Pokémon records maintained in GitHub alongside entries saved locally in this browser.
-async function loadPublishedEntries(){
-  try {
-    const response=await fetch('./collection.json',{cache:'no-store'});
-    if(!response.ok)throw new Error('GitHub collection data unavailable');
-    const data=await response.json();
-    if(data.app!=='LivingDexCloud'||data.version!==1||!data.records||typeof data.records!=='object'||Array.isArray(data.records))throw new Error('Unexpected collection format');
-    let previous={};
-    try {const saved=JSON.parse(localStorage.getItem(REMOTE_KEY)||'{}');if(saved&&typeof saved==='object'&&!Array.isArray(saved))previous=saved}catch(e){console.warn('Previous GitHub snapshot unavailable',e)}
-    let updated=false;
-    for(const [id,values] of Object.entries(data.records)){
-      const n=Number(id);
-      if(!Number.isInteger(n)||n<1||n>MAX||!values||typeof values!=='object'||Array.isArray(values))continue;
-      const current={...get(n)}, prior=previous[id];
-      const known=prior&&typeof prior==='object'&&!Array.isArray(prior);
-      for(const [field,value] of Object.entries(values)){
-        if(!['nickname','source','location','nature','ability','encounterLocation','metLevel','gender','currentLevel','trainerName','trainerId','plannedEvolution','notes','spawn','challenge','challengeDone','obtained'].includes(field))continue;
-        const hasLocal=Object.prototype.hasOwnProperty.call(current,field);
-        const remotelyChanged=known&&JSON.stringify(prior[field])!==JSON.stringify(value);
-        if(!hasLocal||remotelyChanged){current[field]=value;updated=true;}
-      }
-      records[n]=current;
-    }
-    try {localStorage.setItem(REMOTE_KEY,JSON.stringify(data.records))}catch(e){console.warn('Unable to store GitHub sync snapshot',e)}
-    if(updated){save();stats();renderGrid();renderDetails();notify('GitHub Pokémon records added to your Dex')}
-  }catch(e){console.warn('GitHub Pokémon collection could not be loaded:',e)}
+function show(name){view=name;document.querySelectorAll('.view').forEach(x=>x.classList.toggle('active',x.id===name));document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.view===name));render();window.scrollTo({top:0,behavior:'smooth'})}
+function openDialog(id){const el=$(id);if(typeof el.showModal==='function')el.showModal();else el.setAttribute('open','')}
+function closeDialog(id){const el=$(id);if(typeof el.close==='function')el.close();else el.removeAttribute('open')}
+function val(id){return $(id).value.trim()}
+function changeRun(id){if(state.runs[id]){state.activeRun=id;persist();render()}}
+function nextId(prefix){return prefix+'-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,7)}
+function newRun(){const name=prompt('Name the next Nuzlocke run:','Quetzal — Run #'+(Object.keys(state.runs).length+1));if(!name||!name.trim())return;const id=nextId('run');state.runs[id]=emptyRun(id,name.trim().slice(0,100));state.activeRun=id;persist();show('overview');toast('New run created. Older runs are preserved.')}
+function pokemonEditor(id){
+ const p=(run().pokemon||[]).find(x=>x.id===id)||{};
+ $('pokeDialogTitle').textContent=p.id?'Edit '+(p.nickname||p.species):'Add Pokémon';$('pokemonForm').reset();$('monId').value=p.id||'';
+ const mapping={monSpecies:p.species,monDex:p.dex,monNickname:p.nickname,monLevel:p.level||5,monStatus:p.status||'Team',monGender:p.gender,monNature:p.nature,monAbility:p.ability,monLocation:p.location,monMet:p.metLevel,monMoves:p.moves,monDeath:p.deathCause,monNotes:p.notes,ivHp:p.ivs&&p.ivs.hp,ivAt:p.ivs&&p.ivs.attack,ivDf:p.ivs&&p.ivs.defense,ivSa:p.ivs&&p.ivs.spAttack,ivSd:p.ivs&&p.ivs.spDefense,ivSp:p.ivs&&p.ivs.speed};
+ Object.entries(mapping).forEach(([key,v])=>{$(key).value=v===null||v===undefined?'':String(v)});
+ $('monStatus').disabled=p.status==='Fallen';openDialog('pokemonDialog')
 }
-renderTabs();stats();renderGrid();renderDetails();loadPublishedEntries();loadSpecies();
+function readNumber(id){const x=val(id);return x===''?null:Number(x)}
+$('pokemonForm').addEventListener('submit',e=>{
+ e.preventDefault();const r=run(),id=val('monId'),previous=(r.pokemon||[]).find(x=>x.id===id),status=previous&&previous.status==='Fallen'?'Fallen':val('monStatus');
+ if(status==='Fallen'&&(!previous||previous.status!=='Fallen')&&!confirm('Permanently retire this Pokémon? It cannot return to your battling team during this run.'))return;
+ if(status==='Team'&&r.pokemon.filter(x=>x.status==='Team'&&x.id!==id).length>=6){toast('Six active Pokémon already. Box one first.');return}
+ const nums={hp:readNumber('ivHp'),attack:readNumber('ivAt'),defense:readNumber('ivDf'),spAttack:readNumber('ivSa'),spDefense:readNumber('ivSd'),speed:readNumber('ivSp')};
+ const p={...(previous||{}),id:id||nextId('pokemon'),species:val('monSpecies'),dex:readNumber('monDex'),nickname:val('monNickname'),level:readNumber('monLevel'),metLevel:readNumber('monMet'),status,gender:val('monGender'),nature:val('monNature'),ability:val('monAbility'),location:val('monLocation'),moves:val('monMoves'),deathCause:val('monDeath'),ivs:nums,notes:val('monNotes')};
+ if(previous){r.pokemon=r.pokemon.map(x=>x.id===id?p:x)}else{r.pokemon.push(p);if(p.location&&!r.encounters.some(x=>x.area.toLowerCase()===p.location.toLowerCase()))r.encounters.push({id:nextId('enc'),area:p.location,species:p.species,nickname:p.nickname,result:'Caught',notes:'Added from Pokémon roster'})}
+ persist();closeDialog('pokemonDialog');render();toast(previous?'Pokémon updated':'Pokémon recorded')
+});
+function markFallen(id){const r=run(),p=r.pokemon.find(x=>x.id===id);if(!p||p.status==='Fallen')return;const cause=prompt('How did '+(p.nickname||p.species)+' faint? (optional)','');if(cause===null)return;if(!confirm('Mark '+(p.nickname||p.species)+' permanently fallen?'))return;p.status='Fallen';p.deathCause=cause.trim().slice(0,180);persist();render();toast('Added to memorial')}
+function encounterEditor(id){
+ const e=(run().encounters||[]).find(x=>x.id===id)||{};
+ $('encounterForm').reset();$('encId').value=e.id||'';for(const [key,value] of Object.entries({encArea:e.area,encSpecies:e.species,encResult:e.result||'Caught',encNick:e.nickname,encNotes:e.notes}))$(key).value=value||'';openDialog('encounterDialog')
+}
+$('encounterForm').addEventListener('submit',e=>{
+ e.preventDefault();const r=run(),id=val('encId'),area=val('encArea'),previous=r.encounters.find(x=>x.id===id);
+ const taken=r.encounters.find(x=>x.id!==id&&x.area.toLowerCase()===area.toLowerCase());if(taken&&!confirm('This area is already in the encounter log. Add another entry anyway?'))return;
+ const record={id:id||nextId('enc'),area,species:val('encSpecies'),result:val('encResult'),nickname:val('encNick'),notes:val('encNotes')};
+ if(previous)r.encounters=r.encounters.map(x=>x.id===id?record:x);else r.encounters.push(record);
+ persist();closeDialog('encounterDialog');render();toast('Encounter saved')
+});
+function runEditor(){const r=run();for(const [id,value] of Object.entries({settingName:r.name,settingGame:r.game,settingStatus:r.status,settingDate:r.started,settingGym:r.nextGym,settingCap:r.levelCap,settingNotes:r.notes}))$(id).value=value===undefined||value===null?'':value;openDialog('runDialog')}
+$('runForm').addEventListener('submit',e=>{e.preventDefault();const r=run();r.name=val('settingName');r.game=val('settingGame');r.status=val('settingStatus');r.started=val('settingDate');r.nextGym=val('settingGym');r.levelCap=val('settingCap');r.notes=val('settingNotes');persist();closeDialog('runDialog');render();toast('Run updated')});
+function mergeValue(local,remote,prior){
+ if(Array.isArray(remote))return remote.map((v,i)=>mergeValue(Array.isArray(local)?local[i]:undefined,v,Array.isArray(prior)?prior[i]:undefined));
+ if(remote&&typeof remote==='object'){const result=local&&typeof local==='object'&&!Array.isArray(local)?{...local}:{};for(const [key,value] of Object.entries(remote))result[key]=mergeValue(result[key],value,prior&&typeof prior==='object'?prior[key]:undefined);return result}
+ if(local===undefined||local===null||local==='')return remote;
+ if(prior!==undefined&&JSON.stringify(prior)!==JSON.stringify(remote))return remote;
+ return local
+}
+function mergeById(local,remote,prior){
+ const result=Array.isArray(local)?local.slice():[],old=Array.isArray(prior)?prior:[];
+ for(const item of remote||[]){if(!item||!item.id)continue;const k=result.findIndex(x=>x.id===item.id);if(k<0)result.push(item);else result[k]=mergeValue(result[k],item,old.find(x=>x.id===item.id))}
+ return result
+}
+function mergeRun(local,remote,prior){if(!local)return remote;const result={...local};for(const [key,v] of Object.entries(remote)){if(key==='pokemon'||key==='encounters')result[key]=mergeById(result[key],v,prior&&prior[key]);else result[key]=mergeValue(result[key],v,prior&&prior[key])}return result}
+async function syncGitHub(){
+ try{
+  const response=await fetch('./nuzlocke-data.json',{cache:'no-store'});if(!response.ok)throw Error('HTTP '+response.status);
+  const cloud=await response.json();if(cloud.app!==APP||cloud.version!==VERSION||!cloud.runs)throw Error('Invalid GitHub data');
+  let previous={};try{const p=JSON.parse(localStorage.getItem(REMOTE_KEY)||'{}');if(p&&typeof p==='object')previous=p}catch(e){}
+  for(const [key,r] of Object.entries(cloud.runs))state.runs[key]=mergeRun(state.runs[key],r,previous[key]);
+  if(!state.runs[state.activeRun])state.activeRun=cloud.activeRun||Object.keys(state.runs)[0];
+  persist();try{localStorage.setItem(REMOTE_KEY,JSON.stringify(cloud.runs))}catch(e){}
+  render();$('syncStatus').textContent='GitHub records loaded. Website edits are local to this browser.';
+ }catch(e){$('syncStatus').textContent='Using saved browser data. GitHub sync unavailable: '+e.message}
+}
+document.querySelectorAll('#monNature').forEach(el=>el.innerHTML='<option value="">Unknown</option>'+natures.map(x=>'<option>'+x+'</option>').join(''));
+document.querySelectorAll('[data-view]').forEach(el=>el.addEventListener('click',()=>show(el.dataset.view)));
+document.addEventListener('click',e=>{
+ const b=e.target.closest('button');if(!b)return;
+ if(b.dataset.tab){show(b.dataset.tab);return}
+ if(b.dataset.addPokemon!==undefined){pokemonEditor();return}
+ if(b.dataset.editMon){pokemonEditor(b.dataset.editMon);return}
+ if(b.dataset.faint){markFallen(b.dataset.faint);return}
+ if(b.dataset.editEnc){encounterEditor(b.dataset.editEnc);return}
+ if(b.dataset.openRun){changeRun(b.dataset.openRun);show('overview');return}
+ if(b.dataset.badge!==undefined){const r=run(),i=Number(b.dataset.badge);r.badges[i]=!r.badges[i];persist();render();return}
+ if(b.dataset.close){closeDialog(b.dataset.close);return}
+});
+$('runPicker').addEventListener('change',e=>changeRun(e.target.value));
+$('pokeSearch').addEventListener('input',render);$('pokeFilter').addEventListener('change',render);
+$('newRun').addEventListener('click',newRun);$('historyNew').addEventListener('click',newRun);
+$('editRun').addEventListener('click',runEditor);$('editCap').addEventListener('click',runEditor);
+$('addEncounter').addEventListener('click',()=>encounterEditor());
+$('export').addEventListener('click',()=>{const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='nuzlocke-backup-'+new Date().toISOString().slice(0,10)+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),2000);toast('Backup downloaded')});
+$('import').addEventListener('click',()=>$('importFile').click());
+$('importFile').addEventListener('change',async e=>{const f=e.target.files&&e.target.files[0];if(!f)return;try{const d=JSON.parse(await f.text());if(d.app!==APP||d.version!==VERSION||!d.runs||!Object.keys(d.runs).length)throw Error('Not a valid Nuzlocke tracker backup');if(!confirm('Restore this backup and replace data in this browser? Export your current data first.'))return;state=d;persist();show('overview');toast('Backup restored')}catch(err){alert('Restore failed: '+err.message)}finally{e.target.value=''}});
+render();syncGitHub();
+})();
 </script>
-</body>
-</html>
+</body></html>

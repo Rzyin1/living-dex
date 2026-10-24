@@ -16,6 +16,13 @@
       "trainerId": "35685",
       "plannedEvolution": "Venusaur",
       "notes": "Starter received from Professor Oak in Pallet Town at level 5. Raising Sprout into Venusaur; currently Bulbasaur."
+    },
+    "19": {
+      "nickname": "Vermin",
+      "source": "Pokémon FireRed",
+      "encounterLocation": "Route 1",
+      "obtained": true,
+      "notes": "First wild Pokémon caught for the FireRed Living Dex. Evolution assignment pending comparison with the other Rattata."
     }
   }
 }

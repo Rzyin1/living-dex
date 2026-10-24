@@ -17,6 +17,12 @@
       "plannedEvolution": "Venusaur",
       "notes": "Starter received from Professor Oak in Pallet Town at level 5. Raising Sprout into Venusaur; currently Bulbasaur."
     },
+    "16": {
+      "source": "Pokémon FireRed",
+      "encounterLocation": "Route 1",
+      "obtained": true,
+      "notes": "First Pidgey caught on Route 1. Nickname and summary details pending. Evolution assignment undecided until the complete Pidgey group is compared."
+    },
     "19": {
       "nickname": "Vermin",
       "source": "Pokémon FireRed",

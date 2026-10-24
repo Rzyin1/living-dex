@@ -8,7 +8,14 @@
       "ability": "Overgrow",
       "encounterLocation": "Pallet Town — Professor Oak's Lab",
       "metLevel": "5",
-      "obtained": true
+      "obtained": true,
+      "nature": "Timid",
+      "gender": "Male",
+      "currentLevel": "6",
+      "trainerName": "RZYIN",
+      "trainerId": "35685",
+      "plannedEvolution": "Venusaur",
+      "notes": "Starter received from Professor Oak in Pallet Town at level 5. Raising Sprout into Venusaur; currently Bulbasaur."
     }
   }
 }

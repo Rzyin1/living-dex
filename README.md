@@ -1,53 +1,36 @@
-# The Living Dex
+# Pokémon Quetzal — Nuzlocke Runkeeper
 
-A fan-made, personal National Living Pokédex tracker for GitHub Pages, including:
+A responsive Nuzlocke tracker hosted on GitHub Pages at https://rzyin1.github.io/living-dex/
 
-- 1,025 species in National Dex order (species names from PokéAPI, with Generation 1 available on first launch)
-- Generation filters, search, collected/missing filters, and progress metrics
-- Individual Pokémon nicknames, game, physical storage location, and notes
-- Optional challenge-based encounter unlocks
-- GameShark encounter codes for all 151 Generation 1 species in English Pokémon Red/Blue (codes are **not** National Dex numbers)
-- Export/import JSON backups, with local browser storage between visits
+This project **replaces the old Living Pokédex homepage**. The original website, README, and collection file are backed up in `archive/` and still available in Git history.
 
-## Publish to GitHub Pages
+## Features
 
-1. On GitHub, create a **new public repository**, e.g. `living-dex`.
-2. Upload `index.html` and `README.md` to the **root** of the repository and commit.
-3. Under your repository **Settings → Pages**, set **Deploy from a branch**, **main**, and **/(root)**, then save.
-4. Once publishing completes, visit `https://YOUR-USERNAME.github.io/living-dex/`.
+- **Overview:** six active team slots, catch totals, reserve Pokémon, fallen Pokémon, Gym badges and level-cap warning.
+- **Pokémon roster:** nickname, species, National Dex number (optional for art), current level, original level, gender, Nature, Ability, location, moves, IVs and notes.
+- **Permadeath:** mark a fainted Pokémon as Fallen, optionally record the cause. The site does not let a fallen Pokémon rejoin the team during that run.
+- **Encounter log:** one first eligible encounter per route/area by default; outcomes include Caught, Missed and Skipped (dupes).
+- **Run history:** start new attempts without deleting previous runs; track Champion, Wiped, Active and Retired statuses.
+- **Gym badges and level caps:** mark badges individually and enter the *verified* next Gym name and cap. No assumptions about Quetzal version or difficulty.
+- **Save management:** automatic local browser storage and JSON backup/restore.
+- **ChatGPT updates:** the site loads records from `nuzlocke-data.json` in GitHub. ChatGPT can update that file through your connected GitHub account when you report a capture, evolution, faint, or badge.
 
-This app uses plain HTML, CSS, and JavaScript. No build tools or GitHub credentials are necessary.
+## Initial Quetzal run
 
-## How the challenge system works
+Run #1 includes Sprout the Hasty Bulbasaur, level 5, Overgrow. Starting IVs were recorded from the user's Quetzal screenshots.
 
-1. Choose a Pokémon species.
-2. Check **I want to unlock this Pokémon through a challenge**.
-3. Write an original requirement or choose a suggested challenge.
-4. Once you've actually completed it in-game, check **Challenge completed**.
-5. For Generation 1, the GameShark code is revealed for copying; enable it in a compatible emulator and catch the encounter.
-6. Disable the cheat immediately, nickname the Pokémon in-game, and record its nickname and location here.
-7. Mark it as collected only if it has a nickname and is present in the game/save collection.
+## Important: where the data lives
 
-The site does not automatically detect completed challenges or inject cheats into a game. Challenge completion uses the honor system. The site does not transfer Pokémon between games or into Pokémon HOME.
+Edits performed **on the website** are saved in the current browser only. They **do not automatically write back to GitHub**. If you use the site on another computer/phone or clear browser data, download and import a JSON backup.
 
-## Updating Pokémon by chat
+Records that ChatGPT publishes to `nuzlocke-data.json` are read when the page loads. The website merges added Pokémon and updated fields with the current browser record; local-only fields are preserved where possible. If the same field changes independently on both sides, a GitHub update may replace the local value. Export a backup before switching devices or restoring older data.
 
-The file `collection.json` contains Pokémon entries published through GitHub. When you tell ChatGPT about a Pokémon and ask to add it, it can update this file through the connected GitHub account. Refresh the GitHub Pages site to load new or changed fields into your browser's collection.
+GitHub repository content is public. Do not add personal secrets or private information to Pokémon notes.
 
-Entries you edit directly on the website are saved **only in that browser** and are not automatically uploaded to GitHub. A first-time load preserves existing browser values; on later loads, fields deliberately changed in GitHub replace their previously published values, while unrelated locally edited fields are retained.
+## Original Living Pokédex archive
 
-GitHub repositories and Pages websites are public. Do not put private or sensitive personal information in published Pokémon notes. Continue exporting JSON backups regularly.
+- `archive/living-dex-index.html`: previous Pokédex website
+- `archive/living-dex-README.md`: previous instructions
+- `archive/living-dex-collection.json`: previous FireRed Pokémon records
 
-## Save and safety notes
-
-- Make a **backup copy of the game's normal in-game save** before testing an encounter cheat. Some cheats are unstable or game-region-specific.
-- The Gen 1 cheat database targets English **Pokémon Red/Blue** GameShark wild encounter modifiers. Other versions and regions can require different codes; don't use these for Yellow without independent verification.
-- Website collection progress is stored using browser localStorage. It is **not synced with GitHub automatically** or between browsers/devices. Use the **Export backup** button regularly, and **Import backup** on another device or browser.
-- Official-artwork images are requested from the PokéAPI sprites project on GitHub; species metadata is fetched from PokéAPI during the initial visit.
-- Pokémon names/characters/artwork are the property of their respective owners. This is a non-commercial fan project and contains no game ROMs.
-
-## Sources
-
-- mGBA official: https://mgba.io/
-- PokéAPI: https://pokeapi.co/docs/v2
-- Generation 1 GameShark cheat references: https://www.serebii.net/rb/gamesharkrb.shtml ; https://gamefaqs.gamespot.com/gameboy/367023-pokemon-red-version/faqs/6618
+No emulator saves, ROMs, or copyrighted game files are included. This is a fan-made tracking site.

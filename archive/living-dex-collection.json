@@ -1,0 +1,35 @@
+{
+  "app": "LivingDexCloud",
+  "version": 1,
+  "records": {
+    "1": {
+      "nickname": "Sprout",
+      "source": "Pokémon FireRed",
+      "ability": "Overgrow",
+      "encounterLocation": "Pallet Town — Professor Oak's Lab",
+      "metLevel": "5",
+      "obtained": true,
+      "nature": "Timid",
+      "gender": "Male",
+      "currentLevel": "6",
+      "trainerName": "RZYIN",
+      "trainerId": "35685",
+      "plannedEvolution": "Venusaur",
+      "notes": "Starter received from Professor Oak in Pallet Town at level 5. Raising Sprout into Venusaur; currently Bulbasaur."
+    },
+    "16": {
+      "source": "Pokémon FireRed",
+      "encounterLocation": "Route 1",
+      "obtained": true,
+      "notes": "First Pidgey caught on Route 1. Nature, ability, gender, level, and stats pending. Evolution assignment undecided until the complete Pidgey group is compared.",
+      "nickname": "Gale"
+    },
+    "19": {
+      "nickname": "Vermin",
+      "source": "Pokémon FireRed",
+      "encounterLocation": "Route 1",
+      "obtained": true,
+      "notes": "First wild Pokémon caught for the FireRed Living Dex. Evolution assignment pending comparison with the other Rattata."
+    }
+  }
+}

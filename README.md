@@ -30,6 +30,14 @@ This app uses plain HTML, CSS, and JavaScript. No build tools or GitHub credenti
 
 The site does not automatically detect completed challenges or inject cheats into a game. Challenge completion uses the honor system. The site does not transfer Pokémon between games or into Pokémon HOME.
 
+## Updating Pokémon by chat
+
+The file `collection.json` contains Pokémon entries published through GitHub. When you tell ChatGPT about a Pokémon and ask to add it, it can update this file through the connected GitHub account. Refresh the GitHub Pages site to load new or changed fields into your browser's collection.
+
+Entries you edit directly on the website are saved **only in that browser** and are not automatically uploaded to GitHub. A first-time load preserves existing browser values; on later loads, fields deliberately changed in GitHub replace their previously published values, while unrelated locally edited fields are retained.
+
+GitHub repositories and Pages websites are public. Do not put private or sensitive personal information in published Pokémon notes. Continue exporting JSON backups regularly.
+
 ## Save and safety notes
 
 - Make a **backup copy of the game's normal in-game save** before testing an encounter cheat. Some cheats are unstable or game-region-specific.

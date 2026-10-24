@@ -1,0 +1,71 @@
+{
+  "app": "QuetzalNuzlocke",
+  "version": 1,
+  "activeRun": "quetzal-1",
+  "runs": {
+    "quetzal-1": {
+      "id": "quetzal-1",
+      "name": "Quetzal — Run #1",
+      "game": "Pokémon Quetzal",
+      "started": "2026-10-24",
+      "status": "Active",
+      "nextGym": "",
+      "levelCap": "",
+      "notes": "First Quetzal Nuzlocke. Standard first-encounter, nickname and permanent-retirement rules; level caps apply. Exact next Gym cap pending verification.",
+      "badges": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "pokemon": [
+        {
+          "id": "sprout-1",
+          "species": "Bulbasaur",
+          "dex": 1,
+          "nickname": "Sprout",
+          "gender": "Male",
+          "level": 5,
+          "metLevel": 5,
+          "nature": "Hasty",
+          "ability": "Overgrow",
+          "location": "Starter Pokémon",
+          "status": "Team",
+          "moves": "Tackle, Growl, Vine Whip",
+          "ivs": {
+            "hp": 31,
+            "attack": 28,
+            "defense": 31,
+            "spAttack": 31,
+            "spDefense": 6,
+            "speed": 1
+          },
+          "stats": {
+            "hp": 21,
+            "attack": 11,
+            "defense": 9,
+            "spAttack": 13,
+            "spDefense": 11,
+            "speed": 9
+          },
+          "notes": "Original Quetzal starter. Intended to evolve into Venusaur.",
+          "deathCause": ""
+        }
+      ],
+      "encounters": [
+        {
+          "id": "starter-1",
+          "area": "Starter choice",
+          "species": "Bulbasaur",
+          "result": "Caught",
+          "nickname": "Sprout",
+          "notes": "Starter exception — does not use a wild-route encounter."
+        }
+      ]
+    }
+  }
+}
